@@ -73,6 +73,10 @@ r"-e, --connect=[ENDPOINT]... \
 Repeat this option to connect to several peers.'"
             ))
         .arg(Arg::from_usage(
+r"--no-timestamp \
+'By default zenohd adds a HLC-generated Timestamp to each routed Data if there isn't already one. This option disables this feature.'"
+                        ))
+        .arg(Arg::from_usage(
 r"--no-multicast-scouting \
 'By default the zenoh bridge listens and replies to UDP multicast scouting messages for being discovered by peers and routers.
 This option disables this feature.'"
@@ -166,10 +170,9 @@ r#"--watchdog=[PERIOD]   'Experimental!! Run a watchdog thread that monitors the
             .unwrap();
     }
     // Always add timestamps to publications (required for PublicationCache used in case of TRANSIENT_LOCAL topics)
-    config
-        .timestamping
-        .set_enabled(Some(ModeDependentValue::Unique(true)))
-        .unwrap();
+    if args.is_present("no-timestamp") {
+        config.timestamping.set_enabled(Some(ModeDependentValue::Unique(false))).unwrap();
+    }
 
     // apply DDS related arguments over config
     insert_json5!(config, args, "plugins/ros2dds/id", if "id",);
