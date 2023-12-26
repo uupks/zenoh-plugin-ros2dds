@@ -171,7 +171,10 @@ r#"--watchdog=[PERIOD]   'Experimental!! Run a watchdog thread that monitors the
     }
     // Always add timestamps to publications (required for PublicationCache used in case of TRANSIENT_LOCAL topics)
     if args.is_present("no-timestamp") {
-        config.timestamping.set_enabled(Some(ModeDependentValue::Unique(false))).unwrap();
+        config
+            .timestamping
+            .set_enabled(Some(ModeDependentValue::Unique(false)))
+            .unwrap();
     }
 
     // apply DDS related arguments over config
